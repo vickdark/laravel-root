@@ -7,20 +7,24 @@ use App\Http\Controllers\Roles\RoleController;
 use App\Http\Controllers\Roles\PermissionController;
 use App\Http\Controllers\Profile\PasswordController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\WelcomeController;
 
 Route::redirect('/', '/login');
+
+Route::get('/welcome', WelcomeController::class)->name('welcome');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/admin', [DashboardController::class, 'index'])->name('dashboard.admin');
     
-    Route::resource('usuarios', UsuarioController::class);
+    Route::resources([
+        'usuarios' => UsuarioController::class,
+        'roles' => RoleController::class,
+    ]);
     
-    // Gestión de Roles y Seguridad
+    // Gestión de Roles y Seguridad (Rutas adicionales)
     Route::get('roles/{role}/permisos', [RoleController::class, 'permissions'])->name('roles.edit_permissions');
     Route::put('roles/{role}/permisos', [RoleController::class, 'updateRolePermissions'])->name('roles.update_permissions');
-    
-    Route::resource('roles', RoleController::class);
     
     // Gestión de Permisos (Sincronización)
     Route::post('permissions/sync', [PermissionController::class, 'sync'])->name('permissions.sync');

@@ -1,44 +1,69 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.guest')
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+@section('content')
+<div class="text-center py-4">
+    <div class="mb-4">
+        <div class="bg-primary bg-opacity-10 rounded-4 d-inline-flex align-items-center justify-content-center shadow-sm mb-3" style="width: 70px; height: 70px;">
+            <i class="fa-solid fa-rocket text-primary fs-1"></i>
+        </div>
+        <h1 class="display-6 fw-bold text-dark">{{ config('app.name', 'Laravel') }}</h1>
+        <p class="text-muted">Estructura base para proyectos de alto nivel</p>
+    </div>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body>
-        <main class="py-5">
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-12 col-lg-7">
-                        <div class="p-4 p-md-5 bg-white border rounded-4 shadow-soft text-center">
-                            <span class="badge text-bg-warning text-dark mb-3">Auth listo</span>
-                            <h1 class="display-5 fw-semibold mb-3">Ventas listas para despegar.</h1>
-                            <p class="lead text-secondary mb-4">
-                                Ingresa con tu cuenta o crea un nuevo acceso para empezar.
-                            </p>
-                            <div class="d-flex justify-content-center flex-wrap gap-2">
-                                <a class="btn btn-brand text-white" href="{{ route('login') }}">
-                                    Iniciar sesion
-                                </a>
-                                <a class="btn btn-outline-secondary" href="{{ route('register') }}">
-                                    Crear cuenta
-                                </a>
-                            </div>
-                        </div>
-                        <div class="text-center mt-3 small text-secondary">
-                            <a class="text-decoration-none" href="{{ route('password.request') }}">
-                                Olvidaste tu contrasena?
-                            </a>
-                        </div>
-                    </div>
+    <div class="card border-0 bg-light rounded-4 p-4 mb-4">
+        <div class="d-flex flex-column gap-3">
+            <div class="d-flex align-items-center gap-3 text-start">
+                <div class="bg-white p-2 rounded-3 shadow-sm">
+                    <i class="fa-solid fa-shield-halved text-primary"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small">Autenticación Segura</div>
+                    <div class="text-muted extra-small">Gestión de roles y permisos lista.</div>
                 </div>
             </div>
-        </main>
-    </body>
-</html>
+            <div class="d-flex align-items-center gap-3 text-start">
+                <div class="bg-white p-2 rounded-3 shadow-sm">
+                    <i class="fa-solid fa-layer-group text-primary"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small">Arquitectura Modular</div>
+                    <div class="text-muted extra-small">Escalabilidad preparada para nuevos módulos.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-grid mb-4">
+        <a href="{{ route('login') }}" class="btn btn-primary btn-lg rounded-3 shadow-sm fw-bold py-3">
+            Entrar al Sistema
+        </a>
+    </div>
+
+    <div class="mb-2">
+        <figure class="text-center mb-0">
+            <blockquote class="blockquote mb-1">
+                <p class="text-muted small fst-italic mb-0" style="font-size: 0.8rem;">
+                    "{{ $quote }}"
+                </p>
+            </blockquote>
+        </figure>
+    </div>
+
+    @if (Route::has('password.request'))
+        <div class="mt-4 border-top pt-3">
+            <a href="{{ route('password.request') }}" class="text-decoration-none text-muted small">
+                ¿Necesitas ayuda para acceder?
+            </a>
+            <div class="mt-3 text-sidebar-muted" style="font-size: 0.65rem;">
+                &copy; {{ date('Y') }} {{ config('app.name') }} &bull; v1.0.0
+            </div>
+        </div>
+    @endif
+</div>
+
+<style>
+    .extra-small {
+        font-size: 0.75rem;
+    }
+</style>
+@endsection
