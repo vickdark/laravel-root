@@ -9,7 +9,7 @@
             <span>Inicio</span>
         </div>
     </div>
-    <div class="app-topbar-actions">
+    <div class="app-topbar-actions d-flex align-items-center">
         <button class="btn btn-light position-relative me-2">
             <i class="fa-regular fa-bell"></i>
             <span class="app-notification-dot"></span>

@@ -17,15 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // Crear permisos iniciales
         $permissions = [
-            ['nombre' => 'Ver Roles', 'slug' => 'roles.index', 'descripcion' => 'Permite ver la lista de roles'],
-            ['nombre' => 'Crear Roles', 'slug' => 'roles.create', 'descripcion' => 'Permite crear nuevos roles'],
-            ['nombre' => 'Editar Roles', 'slug' => 'roles.edit', 'descripcion' => 'Permite editar roles existentes'],
-            ['nombre' => 'Eliminar Roles', 'slug' => 'roles.destroy', 'descripcion' => 'Permite eliminar roles'],
+            ['nombre' => 'Ver Roles', 'slug' => 'roles.index', 'descripcion' => 'Permite ver la lista de roles', 'is_menu' => true, 'module' => 'Seguridad'],
+            ['nombre' => 'Crear Roles', 'slug' => 'roles.create', 'descripcion' => 'Permite crear nuevos roles', 'is_menu' => false, 'module' => 'Seguridad'],
+            ['nombre' => 'Editar Roles', 'slug' => 'roles.edit', 'descripcion' => 'Permite editar roles existentes', 'is_menu' => false, 'module' => 'Seguridad'],
+            ['nombre' => 'Eliminar Roles', 'slug' => 'roles.destroy', 'descripcion' => 'Permite eliminar roles', 'is_menu' => false, 'module' => 'Seguridad'],
             
-            ['nombre' => 'Ver Permisos', 'slug' => 'permissions.index', 'descripcion' => 'Permite ver la lista de permisos'],
-            ['nombre' => 'Crear Permisos', 'slug' => 'permissions.create', 'descripcion' => 'Permite crear nuevos permisos'],
-            ['nombre' => 'Editar Permisos', 'slug' => 'permissions.edit', 'descripcion' => 'Permite editar permisos existentes'],
-            ['nombre' => 'Eliminar Permisos', 'slug' => 'permissions.destroy', 'descripcion' => 'Permite eliminar permisos'],
+            ['nombre' => 'Ver Usuarios', 'slug' => 'usuarios.index', 'descripcion' => 'Permite ver la lista de usuarios', 'is_menu' => true, 'module' => 'Usuarios'],
+            ['nombre' => 'Ver Permisos', 'slug' => 'permissions.index', 'descripcion' => 'Permite ver la lista de permisos', 'is_menu' => true, 'module' => 'Seguridad'],
+            ['nombre' => 'Configuración', 'slug' => 'configuracion.index', 'descripcion' => 'Configuración del sistema', 'is_menu' => true, 'module' => 'Configuración'],
         ];
 
         foreach ($permissions as $permission) {
@@ -51,6 +50,9 @@ class DatabaseSeeder extends Seeder
 
         // Obtener el rol de administrador
         $adminRole = Role::where('slug', 'admin')->first();
+        
+        // Asignar todos los permisos al administrador
+        $adminRole->permissions()->sync(Permission::all());
 
         // Crear el usuario administrador único
         Usuario::firstOrCreate(

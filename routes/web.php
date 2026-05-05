@@ -9,6 +9,8 @@ use App\Http\Controllers\Profile\PasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WelcomeController;
 
+use App\Http\Controllers\ConfiguracionController;
+
 Route::redirect('/', '/login');
 
 Route::get('/welcome', WelcomeController::class)->name('welcome');
@@ -21,6 +23,10 @@ Route::middleware('auth')->group(function () {
         'usuarios' => UsuarioController::class,
         'roles' => RoleController::class,
     ]);
+
+    // Configuración del Sistema
+    Route::get('/configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index');
+    Route::post('/configuracion', [ConfiguracionController::class, 'update'])->name('configuracion.update');
     
     // Gestión de Roles y Seguridad (Rutas adicionales)
     Route::get('roles/{role}/permisos', [RoleController::class, 'permissions'])->name('roles.edit_permissions');

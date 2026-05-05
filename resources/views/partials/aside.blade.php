@@ -1,12 +1,16 @@
 <aside class="app-sidebar">
     <div class="app-sidebar-inner">
         <div class="app-sidebar-brand px-4 py-3 d-flex align-items-center gap-3">
-            <div class="app-brand-logo bg-primary bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px; min-width: 40px;">
-                <i class="fa-solid fa-rocket text-primary fs-4"></i>
+            <div class="app-brand-logo bg-white bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px; min-width: 40px;">
+                @if(setting('app_logo_image'))
+                    <img src="{{ asset('storage/' . setting('app_logo_image')) }}" alt="Logo" style="width: 30px; height: 30px; object-fit: contain;">
+                @else
+                    <i class="fa-solid {{ setting('app_logo_icon', 'fa-rocket') }} text-primary fs-4"></i>
+                @endif
             </div>
             <div class="app-brand-info overflow-hidden">
-                <span class="app-brand-text fw-bold text-white fs-5 lh-1 d-block">{{ config('app.name', 'Laravel') }}</span>
-                <span class="text-sidebar-muted fw-medium" style="font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase;">Sistema en laravel</span>
+                <span class="app-brand-text fw-bold text-white fs-5 lh-1 d-block">{{ setting('app_name', config('app.name', 'Laravel')) }}</span>
+                <span class="text-sidebar-muted fw-medium" style="font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase;">{{ setting('app_subtitle', 'Sistema en laravel') }}</span>
             </div>
         </div>
 
@@ -16,7 +20,11 @@
                 $role = $user ? $user->role : null;
                 $userPermissions = $role 
                     ? $role->permissions()
-                        ->where('is_menu', true)
+                        ->where(function($q) {
+                            $q->where('slug', 'LIKE', '%.index')
+                              ->orWhere('slug', 'dashboard');
+                        })
+                        ->whereNotNull('module')
                         ->orderBy('order')
                         ->get()
                         ->groupBy('module')
@@ -31,51 +39,17 @@
             @endif
 
             @foreach($userPermissions as $module => $items)
-                @if($module === 'Dashboard')
-                    @foreach($items as $item)
-                        @php
-                            // El dashboard es un caso especial: es activo si la ruta es 'dashboard' 
-                            // o cualquier ruta que empiece por 'dashboard.'
-                            $isDashboardActive = request()->routeIs('dashboard') || request()->routeIs('dashboard.*');
-                        @endphp
-                        <a class="nav-link {{ $isDashboardActive ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                            <i class="{{ $item->icon ?: 'fa-solid fa-gauge-high' }}"></i>
-                            <span class="app-link-text">{{ $item->nombre }}</span>
-                        </a>
-                    @endforeach
-                @else
-                    @php
-                        $moduleSlug = strtolower($module);
-                        $isActive = false;
-                        foreach($items as $item) {
-                            if(request()->routeIs(explode('.', $item->slug)[0] . '.*')) {
-                                $isActive = true;
-                                break;
-                            }
-                        }
-                    @endphp
-                    
-                    <div class="nav-item">
-                        <a class="nav-link {{ $isActive ? '' : 'collapsed' }}" 
-                           data-bs-toggle="collapse" 
-                           href="#menu-{{ $moduleSlug }}" 
-                           role="button" 
-                           aria-expanded="{{ $isActive ? 'true' : 'false' }}">
-                            <i class="{{ $items->first()->icon ?: 'fa-solid fa-circle-dot' }}"></i>
-                            <span class="app-link-text">{{ $module }}</span>
-                            <i class="fa-solid fa-chevron-down ms-auto nav-chevron"></i>
-                        </a>
-                        <div class="collapse {{ $isActive ? 'show' : '' }}" id="menu-{{ $moduleSlug }}" data-bs-parent="#sidebarAccordion">
-                            <nav class="nav flex-column ms-3 mt-1">
-                                @foreach($items as $item)
-                                    <a class="nav-link py-1 {{ request()->routeIs($item->slug) ? 'active' : '' }}" href="{{ Route::has($item->slug) ? route($item->slug) : '#' }}">
-                                        <span class="small">{{ $item->nombre }}</span>
-                                    </a>
-                                @endforeach
-                            </nav>
-                        </div>
-                    </div>
-                @endif
+                @php
+                    // Obtenemos el primer item que suele ser el 'index' del módulo
+                    $mainItem = $items->first();
+                    $routePrefix = explode('.', $mainItem->slug)[0];
+                    $isActive = request()->routeIs($routePrefix . '.*') || request()->routeIs($mainItem->slug);
+                @endphp
+
+                <a class="nav-link {{ $isActive ? 'active' : '' }}" href="{{ Route::has($mainItem->slug) ? route($mainItem->slug) : '#' }}">
+                    <i class="{{ $mainItem->icon ?: 'fa-solid fa-circle-dot' }}"></i>
+                    <span class="app-link-text">{{ $module }}</span>
+                </a>
             @endforeach
         </nav>
 

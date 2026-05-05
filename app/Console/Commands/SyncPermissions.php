@@ -195,6 +195,7 @@ class SyncPermissions extends Command
             'usuarios' => 'fa-solid fa-users',
             'roles'    => 'fa-solid fa-user-shield',
             'permissions' => 'fa-solid fa-key',
+            'configuracion' => 'fa-solid fa-gears',
             'infraestructura' => 'fa-solid fa-server',
             'inventario' => 'fa-solid fa-laptop-code',
             'asignaciones' => 'fa-solid fa-hand-holding-hand',
@@ -229,6 +230,7 @@ class SyncPermissions extends Command
         if ($slug === 'dashboard') return 1;
         if (str_contains($slug, 'usuarios')) return 10;
         if (str_contains($slug, 'roles')) return 20;
+        if (str_contains($slug, 'configuracion')) return 900;
         if (str_contains($slug, 'infraestructura')) return 100;
         return 50;
     }
